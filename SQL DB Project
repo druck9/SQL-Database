@@ -1,0 +1,72 @@
+CREATE TABLE Coffee_Shop ( 
+ shop_id INT PRIMARY KEY, 
+ shop_name VARCHAR(50), 
+ city VARCHAR(50), 
+ state CHAR(2) 
+);
+CREATE TABLE Supplier ( 
+ supplier_id INT PRIMARY KEY, 
+ company_name VARCHAR(50), 
+ country VARCHAR(30), 
+ sales_contact_name VARCHAR(60), 
+ email VARCHAR(50) NOT NULL 
+);
+CREATE TABLE Employee ( 
+ employee_id INT PRIMARY KEY, 
+ first_name VARCHAR(30), 
+ last_name VARCHAR(30), 
+ hire_date DATE, 
+ job_title VARCHAR(30), 
+ shop_id INT, 
+ FOREIGN KEY (shop_id) REFERENCES Coffee_Shop(shop_id) 
+);
+CREATE TABLE Coffee ( 
+ coffee_id INT PRIMARY KEY, 
+ shop_id INT, 
+ supplier_id INT, 
+ coffee_name VARCHAR(30), 
+ price_per_pound NUMERIC(5,2), 
+ FOREIGN KEY (shop_id) REFERENCES Coffee_Shop(shop_id), 
+ FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id) 
+); 
+Insert INTO Coffee_Shop
+ Values
+ (1665,'Coffee Crew','Raleigh','NC'),
+ (1396,'No Sleep Till Coffee','Brooklyn','NY'),
+ (1876,'Oceanside Coffee','Myrtle Beach','SC')
+ ;
+Insert into Supplier
+ Values
+ (3122,'Coffee Haus','Germany','Franz Muller','fmuller@gmail.com'),
+ (1000,'Nutty Grinder','United States of America','Curtis Diaz','cdiaz@gmail.com'),
+ (2145,'Best of Rio Coffee','Brazil','Jose Silva','jsilva@gmail.com')
+ ;
+Insert INTO Employee
+ values
+ (1985,'Dan','Smith','2022-09-25','Barista',1665),
+ (2003,'James','Harrison','2019-01-01','Assistant Manager',1396),
+ (1665,'Allison','Brown','2017-05-11','Store Manager',1876)
+ ;
+Insert INTO Coffee
+ Values
+ (15,1665,3122,'Crew Special','14.99'),
+ (27,1396,1000,'Intergalatic Blend','17.99'),
+ (7,1876,2145,'Sunrise Blend','15.99')
+;
+CREATE VIEW employee_view
+AS Select employee_id,CONCAT(first_name,’’,last_name) AS employee_full_name, hire_date, 
+job_title, shop_id
+FROM Employee;
+CREATE INDEX idx_coffee_name
+ON Coffee(coffee_name);
+Select first_name, last_name
+From Employee
+Where Employee_id >= 1985
+;
+SELECT Coffee_Shop.shop_name, Coffee.coffee_name, Coffee.price_per_pound, 
+Supplier.company_name, Supplier.sales_contact_name, Supplier.email 
+FROM Coffee 
+JOIN Coffee_Shop 
+ON Coffee_Shop.shop_id = Coffee.shop_id 
+JOIN Supplier 
+ON Supplier.supplier_id = Coffee.supplier_id;
